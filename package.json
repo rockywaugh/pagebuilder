@@ -6,12 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "purge": "curl -s -X POST http://localhost:3000/api/cleanup"
   },
   "dependencies": {
+    "jose": "^6.2.12",
     "next": "16.3.4",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "sharp": "^0.35.4",
+    "stripe": "^22.6.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

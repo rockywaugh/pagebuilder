@@ -1,26 +1,103 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+  --paper: #12110f;
+  --paper-2: #1c1a17;
+  --ink: #f3eee6;
+  --ink-soft: #d4cdc3;
+  --muted: #9a9288;
+  --clay: #e07a3d;
+  --clay-dark: #c45c26;
+  --stage: #12110f;
+  --phone-bezel: #0c0b09;
+  --rule: color-mix(in srgb, var(--ink) 14%, transparent);
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+  --paper: #f3eadc;
+  --paper-2: #e7dcc8;
+  --ink: #1c1712;
+  --ink-soft: #3d342b;
+  --muted: #8a7d6d;
+  --clay: #c45c26;
+  --clay-dark: #9a4318;
+  --stage: #f3eadc;
+  --phone-bezel: #1a1612;
+  --rule: color-mix(in srgb, var(--ink) 14%, transparent);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-muted: var(--muted);
+  --color-clay: var(--clay);
+  --color-stage: var(--stage);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-newsreader);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Helvetica Neue, Helvetica, sans-serif;
+}
+
+.display {
+  font-family: var(--font-inter), Helvetica Neue, Helvetica, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--clay) 35%, var(--paper));
+}
+
+.serif {
+  font-family: var(--font-newsreader), Georgia, serif;
+}
+
+.hairline {
+  border-color: var(--rule);
+}
+
+@keyframes pb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pb-spinner {
+  width: 22px;
+  height: 22px;
+  border: 2px solid color-mix(in srgb, var(--ink) 18%, transparent);
+  border-top-color: var(--ink);
+  border-radius: 50%;
+  animation: pb-spin 0.7s linear infinite;
+}
+
+@keyframes pb-alert-flash {
+  0%,
+  100% {
+    color: var(--clay);
+    background-color: transparent;
+  }
+  25%,
+  75% {
+    color: var(--clay);
+    background-color: color-mix(in srgb, var(--clay) 22%, transparent);
+  }
+}
+
+.pb-alert-flash {
+  animation: pb-alert-flash 0.7s ease-in-out 3;
+  border-radius: 4px;
 }
