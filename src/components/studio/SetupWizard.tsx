@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { TEMPLATE_MOOD_ID } from "@/lib/types";
 import { YourPagesButton } from "./YourPagesButton";
 import type { PublicProject } from "@/lib/public-project";
 
@@ -299,9 +300,19 @@ export function SetupWizard({
   const typeStage = project.wizard === "type";
   const moodStage = project.wizard === "mood";
   const fontStage = project.wizard === "font";
+  const selectedPattern = patterns.find((item) => item.id === project.pattern?.id);
+  const templateMoodOption: CatalogMood | null = selectedPattern
+    ? {
+        id: TEMPLATE_MOOD_ID,
+        name: "Default",
+        look: "Original colors for this page type, including the navigation rule.",
+        swatches: selectedPattern.swatches,
+      }
+    : null;
+  const moodChoices = templateMoodOption ? [templateMoodOption, ...moods] : moods;
   const selectedId = typeStage ? project.pattern?.id : moodStage ? project.mood?.id : project.font?.id;
   const canNext = typeStage ? !!project.pattern : moodStage ? !!project.mood : fontStage && !!project.font;
-  const options = typeStage ? patterns : moodStage ? moods : fonts;
+  const options = typeStage ? patterns : moodStage ? moodChoices : fonts;
   const collapsed = !!selectedId && !browsing;
   const selectedOption = options.find((item) => item.id === selectedId) ?? null;
 
@@ -442,7 +453,7 @@ export function SetupWizard({
             )
           ) : (
             <PickerCarousel
-              items={moodStage ? moods : fonts}
+              items={moodStage ? moodChoices : fonts}
               selectedId={moodStage ? project.mood?.id : project.font?.id}
               disabled={busy}
               onPick={(id) => void (moodStage ? pickMood(id) : pickFont(id))}

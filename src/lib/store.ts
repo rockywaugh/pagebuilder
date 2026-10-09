@@ -2,9 +2,9 @@ import { mkdir, readFile, readdir, rm, writeFile, unlink } from "node:fs/promise
 import path from "node:path";
 import { LIMITS } from "./config";
 import type { Entitlements, Project, UserRecord } from "./types";
+import { getUserByEmail, getUserById, upsertUser } from "./users-db";
 
 const ROOT = path.join(process.cwd(), "data");
-const USERS = path.join(ROOT, "users.json");
 const PROJECTS = path.join(ROOT, "projects");
 const UPLOADS = path.join(ROOT, "uploads");
 
@@ -24,38 +24,17 @@ async function ensureDirs() {
   await mkdir(UPLOADS, { recursive: true });
 }
 
-async function readUsers(): Promise<UserRecord[]> {
-  await ensureDirs();
-  try {
-    const raw = await readFile(USERS, "utf8");
-    return JSON.parse(raw) as UserRecord[];
-  } catch {
-    return [];
-  }
-}
-
-async function writeUsers(users: UserRecord[]) {
-  await ensureDirs();
-  await writeFile(USERS, JSON.stringify(users, null, 2));
-}
-
 export async function findUserByEmail(email: string): Promise<UserRecord | null> {
-  const users = await readUsers();
-  return users.find((user) => user.email === email.toLowerCase()) ?? null;
+  return getUserByEmail(email);
 }
 
 export async function findUserById(id: string): Promise<UserRecord | null> {
-  const users = await readUsers();
-  return users.find((user) => user.id === id) ?? null;
+  return getUserById(id);
 }
 
 export async function saveUser(user: UserRecord): Promise<void> {
   await withLock(async () => {
-    const users = await readUsers();
-    const index = users.findIndex((item) => item.id === user.id);
-    if (index === -1) users.push(user);
-    else users[index] = user;
-    await writeUsers(users);
+    upsertUser(user);
   });
 }
 

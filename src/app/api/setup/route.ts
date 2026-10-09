@@ -9,10 +9,10 @@ import {
   applyMood,
   applyPattern,
   defaultFontForPattern,
-  defaultMoodForPattern,
   fontById,
   moodById,
   patternById,
+  templateMood,
 } from "@/lib/ui-source";
 
 type SetupBody = {
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     if ((reopen === "mood" || reopen === "font") && !patternById(project.spec.patternId)) {
       return jsonError("Choose a page type first.");
     }
-    if (reopen === "font" && !moodById(project.spec.moodId)) {
+    if (reopen === "font" && !moodById(project.spec.moodId, patternById(project.spec.patternId))) {
       return jsonError("Choose a mood first.");
     }
     project.wizard = reopen;
@@ -75,7 +75,8 @@ export async function POST(request: Request) {
     const keptFont = project.spec.fontId;
     if (pattern) {
       project.spec = applyPattern(project.spec, pattern);
-      project.spec.moodId = keptMood;
+      const mood = moodById(keptMood, pattern);
+      if (mood) project.spec = applyMood(project.spec, mood);
       const font = fontById(keptFont);
       if (font) project.spec = applyFont(project.spec, font);
       project.previewRevision += 1;
@@ -106,8 +107,17 @@ export async function POST(request: Request) {
     if (!pattern) {
       return jsonError("Choose a page type first.");
     }
-    if (!moodById(project.spec.moodId)) {
-      project.spec = applyMood(project.spec, defaultMoodForPattern(pattern));
+    const mood = moodById(project.spec.moodId, pattern) ?? templateMood(pattern);
+    const previous = project.spec.theme;
+    const previousMood = project.spec.moodId;
+    project.spec = applyMood(project.spec, mood);
+    if (
+      previousMood !== project.spec.moodId ||
+      previous.bg !== project.spec.theme.bg ||
+      previous.ink !== project.spec.theme.ink ||
+      previous.accent !== project.spec.theme.accent ||
+      previous.muted !== project.spec.theme.muted
+    ) {
       project.previewRevision += 1;
     }
     project.wizard = "mood";
@@ -117,7 +127,8 @@ export async function POST(request: Request) {
 
   if (action === "select-mood") {
     if (stage !== "mood") return jsonError("Choose a mood on this screen.");
-    const mood = moodById(body?.moodId);
+    const pattern = patternById(project.spec.patternId);
+    const mood = moodById(body?.moodId, pattern);
     if (!mood) return jsonError("Choose a mood from the list.");
     project.spec = applyMood(project.spec, mood);
     project.previewRevision += 1;
@@ -128,7 +139,7 @@ export async function POST(request: Request) {
   if (action === "advance-mood") {
     if (stage !== "mood") return jsonError("Choose a mood first.");
     const pattern = patternById(project.spec.patternId);
-    if (!moodById(project.spec.moodId) || !pattern) {
+    if (!moodById(project.spec.moodId, pattern) || !pattern) {
       return jsonError("Choose a mood first.");
     }
     if (!fontById(project.spec.fontId)) {
@@ -156,7 +167,7 @@ export async function POST(request: Request) {
   if (stage !== "font") return jsonError("Choose a typeface first.");
   if (
     !fontById(project.spec.fontId) ||
-    !moodById(project.spec.moodId) ||
+    !moodById(project.spec.moodId, patternById(project.spec.patternId)) ||
     !patternById(project.spec.patternId)
   ) {
     return jsonError("Choose a typeface first.");

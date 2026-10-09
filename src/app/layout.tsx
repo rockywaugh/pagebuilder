@@ -1,17 +1,12 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Inter, Newsreader } from "next/font/google";
+import { Inter } from "next/font/google";
 import { APP_NAME } from "@/lib/config";
 import { AnalyticsBeacon } from "@/components/AnalyticsBeacon";
 import "./globals.css";
 
 const sans = Inter({
   variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const serif = Newsreader({
-  variable: "--font-newsreader",
   subsets: ["latin"],
 });
 
@@ -27,7 +22,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       data-theme="dark"
       suppressHydrationWarning
-      className={`${sans.variable} ${serif.variable} h-full antialiased`}
+      className={`${sans.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-paper text-ink">
         <Script id="pb-theme" strategy="beforeInteractive">

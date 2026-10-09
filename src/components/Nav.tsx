@@ -1,6 +1,6 @@
 import Link from "next/link";
+import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { APP_NAME } from "@/lib/config";
 
 export function Nav({ tone = "paper" }: { tone?: "paper" | "stage" }) {
   const light = tone === "paper";
@@ -10,9 +10,7 @@ export function Nav({ tone = "paper" }: { tone?: "paper" | "stage" }) {
         light ? "text-ink" : "text-[var(--paper)]"
       }`}
     >
-      <Link href="/" className="display text-lg">
-        {APP_NAME}
-      </Link>
+      <Logo />
       <nav className="flex items-center gap-3 sm:gap-5">
         <ThemeToggle />
         <Link href="/studio" className="hover:opacity-70">
@@ -20,6 +18,9 @@ export function Nav({ tone = "paper" }: { tone?: "paper" | "stage" }) {
         </Link>
         <Link href="/pricing" className="hidden hover:opacity-70 sm:inline">
           Pricing
+        </Link>
+        <Link href="/login" className="hover:opacity-70">
+          Log in
         </Link>
         <Link href="/signup" className="hidden hover:opacity-70 sm:inline">
           Sign up

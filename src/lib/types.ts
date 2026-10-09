@@ -1,5 +1,8 @@
 export type WizardStage = "type" | "mood" | "font" | "done";
 
+/** Mood id for the page type's own palette, including its navigation rule. */
+export const TEMPLATE_MOOD_ID = "template";
+
 export type GuideStep =
   | "purpose"
   | "mood"

@@ -1,4 +1,4 @@
-import { createHash, randomBytes, scrypt as scryptCb, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, randomBytes, scrypt as scryptCb, timingSafeEqual } from "node:crypto";
 import { promisify } from "node:util";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
@@ -11,6 +11,10 @@ const COOKIE = "pagebuilder_session";
 function secretKey() {
   const raw = process.env.SESSION_SECRET || "pagebuilder-dev-secret-change-me-32bytes!!";
   return new TextEncoder().encode(raw);
+}
+
+export function hashVerificationCode(email: string, code: string) {
+  return createHmac("sha256", secretKey()).update(`${email}:${code}`).digest("hex");
 }
 
 export async function hashPassword(password: string): Promise<string> {

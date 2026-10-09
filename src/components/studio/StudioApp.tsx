@@ -8,8 +8,8 @@ import { SetupWizard } from "./SetupWizard";
 import { UnlockSheet } from "./UnlockSheet";
 import { CompletedView, mergeStudioPageTabs, type StudioPageRow } from "./CompletedView";
 import { EmailGate } from "./EmailGate";
+import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { APP_NAME } from "@/lib/config";
 import type { PublicProject } from "@/lib/public-project";
 
 type Me = {
@@ -132,9 +132,7 @@ export function StudioApp() {
   return (
     <div className="flex h-screen flex-col">
       <header className="flex items-center justify-between gap-3 border-b border-ink/10 bg-paper px-4 py-3 text-sm sm:px-5">
-        <Link href="/" className="display text-lg">
-          {APP_NAME}
-        </Link>
+        <Logo />
         <div className="flex items-center gap-3 text-xs text-muted">
           <span className="hidden sm:inline">
             {me.user
@@ -153,6 +151,9 @@ export function StudioApp() {
           >
             {clearing ? "Clearing…" : "Clear session"}
           </button>
+          <Link href="/login" className="text-ink">
+            Log in
+          </Link>
           <Link href="/account" className="text-ink">
             Account
           </Link>

@@ -101,7 +101,7 @@ export const STEP_COPY: Record<
   access: {
     title: "Login",
     prompt: "Do you want visitors to sign in on this page?",
-    hints: ["No login", "Basic login in the files", "PageBuilder-managed login"],
+    hints: ["No login", "Basic login in the files", "PageBuilder managed login"],
   },
   complete: {
     title: "Done",

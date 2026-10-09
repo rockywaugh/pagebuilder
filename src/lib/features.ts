@@ -26,8 +26,8 @@ export const LOGIN_FEATURES: FeatureOption[] = [
   },
   {
     id: "hosted",
-    title: "PageBuilder-managed login",
-    body: "We run login for you. The page must be deployed on PageBuilder. Everyone who chooses this gets the same login layout, themed to their page, at /their-page/login.",
+    title: "PageBuilder managed login",
+    body: "We run login for you. The page must be deployed on PageBuilder.",
     requires: "membership+hosted",
     priceNote: `Membership plus $${PRICES.hostedLoginUsd}/month`,
   },

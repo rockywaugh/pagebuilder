@@ -1,5 +1,5 @@
 import { isPlaceholderPageName } from "./config";
-import type { FontMood, HeaderStyle, SectionType, SiteSpec, SiteTheme } from "./types";
+import { TEMPLATE_MOOD_ID, type FontMood, type HeaderStyle, type SectionType, type SiteSpec, type SiteTheme } from "./types";
 
 export type PatternFamily =
   | "product"
@@ -585,46 +585,23 @@ export const MARKET_MOODS: MarketMood[] = [
   },
 ];
 
-export function moodById(id: string | undefined): MarketMood | undefined {
+export function templateMood(pattern: MarketPattern): MarketMood {
+  return {
+    id: TEMPLATE_MOOD_ID,
+    name: "Default",
+    look: "Original colors for this page type, including the navigation rule.",
+    palette: pattern.palette,
+  };
+}
+
+export function moodById(id: string | undefined, pattern?: MarketPattern | null): MarketMood | undefined {
   if (!id) return undefined;
+  if (id === TEMPLATE_MOOD_ID) return pattern ? templateMood(pattern) : undefined;
   return MARKET_MOODS.find((item) => item.id === id);
 }
 
-function hexDistance(a: string, b: string) {
-  const parse = (hex: string) => {
-    const value = hex.replace("#", "");
-    return [
-      Number.parseInt(value.slice(0, 2), 16),
-      Number.parseInt(value.slice(2, 4), 16),
-      Number.parseInt(value.slice(4, 6), 16),
-    ] as const;
-  };
-  const left = parse(a);
-  const right = parse(b);
-  return (left[0] - right[0]) ** 2 + (left[1] - right[1]) ** 2 + (left[2] - right[2]) ** 2;
-}
-
 export function defaultMoodForPattern(pattern: MarketPattern): MarketMood {
-  const exact = MARKET_MOODS.find(
-    (mood) =>
-      mood.palette.bg === pattern.palette.bg &&
-      mood.palette.ink === pattern.palette.ink &&
-      mood.palette.accent === pattern.palette.accent,
-  );
-  if (exact) return exact;
-  const named = MARKET_MOODS.find((mood) => mood.palette.mood === pattern.palette.mood);
-  if (named) return named;
-  return MARKET_MOODS.reduce((best, mood) => {
-    const next =
-      hexDistance(mood.palette.bg, pattern.palette.bg) +
-      hexDistance(mood.palette.ink, pattern.palette.ink) +
-      hexDistance(mood.palette.accent, pattern.palette.accent);
-    const current =
-      hexDistance(best.palette.bg, pattern.palette.bg) +
-      hexDistance(best.palette.ink, pattern.palette.ink) +
-      hexDistance(best.palette.accent, pattern.palette.accent);
-    return next < current ? mood : best;
-  });
+  return templateMood(pattern);
 }
 
 export type PatternMatch = {

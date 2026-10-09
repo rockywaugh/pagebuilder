@@ -43,7 +43,7 @@ export async function toPublic(
 ): Promise<PublicProject> {
   const pages = user ? await listProjectsForOwner(user.id) : [];
   const pattern = patternById(project.spec.patternId);
-  const mood = moodById(project.spec.moodId);
+  const mood = moodById(project.spec.moodId, pattern);
   const font = fontById(project.spec.fontId);
   return {
     id: project.id,
